@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wakeApi", "wakeApi\wakeApi.csproj", "{C69645F1-8711-4237-917E-94CC9AF22288}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C69645F1-8711-4237-917E-94CC9AF22288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C69645F1-8711-4237-917E-94CC9AF22288}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C69645F1-8711-4237-917E-94CC9AF22288}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C69645F1-8711-4237-917E-94CC9AF22288}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9DD347D8-F19B-4709-B40C-42D385F01CAD}
+	EndGlobalSection
+EndGlobal
