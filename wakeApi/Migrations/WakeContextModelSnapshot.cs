@@ -270,6 +270,9 @@ namespace wakeApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("CountDislike")
+                        .HasColumnType("int");
+
                     b.Property<int>("CountLike")
                         .HasColumnType("int");
 
@@ -305,6 +308,10 @@ namespace wakeApi.Migrations
 
                     b.Property<DateTime>("Posted")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ThumbImage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()

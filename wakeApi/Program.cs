@@ -1,4 +1,5 @@
 using wakeApi.Data;
+using wakeApi.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<WakeContext>(option => option.UseSqlServer(connectionString));
+builder.Services.AddIdentityCore<User>(option => option.SignIn.RequireConfirmedEmail = true).AddEntityFrameworkStores<WakeContext>();
 
 var app = builder.Build();
 

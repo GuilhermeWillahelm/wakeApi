@@ -128,6 +128,7 @@ namespace wakeApi.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Posted = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Video = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ThumbImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -220,6 +221,7 @@ namespace wakeApi.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CountLike = table.Column<int>(type: "int", nullable: false),
+                    CountDislike = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     PostId = table.Column<int>(type: "int", nullable: false),
                     PostVideoId = table.Column<int>(type: "int", nullable: true)
