@@ -12,7 +12,7 @@ using wakeApi.Data;
 namespace wakeApi.Migrations
 {
     [DbContext(typeof(WakeContext))]
-    [Migration("20220316134427_InitialCreate")]
+    [Migration("20220316135015_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -234,6 +234,47 @@ namespace wakeApi.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
+            modelBuilder.Entity("wakeApi.Models.Channel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ChannelDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ChannelName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedChanel")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("FollowerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FollwerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageBanner")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FollowerId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Channels");
+                });
+
             modelBuilder.Entity("wakeApi.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -262,6 +303,28 @@ namespace wakeApi.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("wakeApi.Models.Follower", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("FollowerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Followers");
                 });
 
             modelBuilder.Entity("wakeApi.Models.Like", b =>
@@ -397,6 +460,23 @@ namespace wakeApi.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("wakeApi.Models.Channel", b =>
+                {
+                    b.HasOne("wakeApi.Models.Follower", "Follower")
+                        .WithMany()
+                        .HasForeignKey("FollowerId");
+
+                    b.HasOne("wakeApi.Identity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Follower");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("wakeApi.Models.Comment", b =>
                 {
                     b.HasOne("wakeApi.Models.PostVideo", "PostVideo")
@@ -410,6 +490,17 @@ namespace wakeApi.Migrations
                         .IsRequired();
 
                     b.Navigation("PostVideo");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("wakeApi.Models.Follower", b =>
+                {
+                    b.HasOne("wakeApi.Identity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

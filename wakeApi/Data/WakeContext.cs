@@ -14,6 +14,8 @@ namespace wakeApi.Data
         public DbSet<PostVideo> PostVideos { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Channel> Channels { get; set; }
+        public DbSet<Follower> Followers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
