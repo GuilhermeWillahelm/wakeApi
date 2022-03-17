@@ -21,8 +21,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<WakeContext>(option => option.UseSqlServer(connectionString));
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+builder.Services.AddCors();
 
-IdentityBuilder identityBuilder = builder.Services.AddIdentityCore<User>(option => option.SignIn.RequireConfirmedEmail = false);
+IdentityBuilder identityBuilder = builder.Services.AddIdentityCore<User>(option => option.SignIn.RequireConfirmedEmail = true);
 identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(Role), builder.Services);
 identityBuilder.AddEntityFrameworkStores<WakeContext>();
 identityBuilder.AddRoleValidator<RoleValidator<Role>>();
@@ -42,7 +43,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddMvcCore(options =>
+builder.Services.AddMvc(options =>
 {
     var policy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser().Build();
