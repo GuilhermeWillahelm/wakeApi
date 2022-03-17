@@ -5,9 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using wakeApi.Data;
+using wakeApi.Dtos;
+using wakeApi.Identity;
 using wakeApi.Models;
+using AutoMapper;
 
 namespace wakeApi.Controllers
 {
@@ -16,22 +20,26 @@ namespace wakeApi.Controllers
     public class LikesController : ControllerBase
     {
         private readonly WakeContext _context;
+        private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
 
-        public LikesController(WakeContext context)
+        public LikesController(WakeContext context, IMapper mapper, UserManager<User> userManager)
         {
             _context = context;
+            _mapper = mapper;
+            _userManager = userManager;
         }
 
         // GET: api/Likes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Like>>> GetLikes()
+        public async Task<ActionResult<IEnumerable<LikeDto>>> GetLikes()
         {
-            return await _context.Likes.ToListAsync();
+            return await _context.Likes.Select(l => ItemToDto(l)).ToListAsync();
         }
 
         // GET: api/Likes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Like>> GetLike(int id)
+        public async Task<ActionResult<LikeDto>> GetLike(int id)
         {
             var like = await _context.Likes.FindAsync(id);
 
@@ -40,20 +48,31 @@ namespace wakeApi.Controllers
                 return NotFound();
             }
 
-            return like;
+            return ItemToDto(like);
         }
 
         // PUT: api/Likes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutLike(int id, Like like)
+        public async Task<IActionResult> PutLike(int id, LikeDto likeDto)
         {
-            if (id != like.Id)
+            if (id != likeDto.Id)
             {
                 return BadRequest();
             }
+            var like = await _context.Likes.FindAsync(id);
+
+            if(like == null)
+            {
+                NoContent();
+            }
 
             _context.Entry(like).State = EntityState.Modified;
+            like.Id = id;
+            like.CountLike = likeDto.CountLike;
+            like.CountDislike = likeDto.CountDislike;
+            like.PostId = likeDto.PostId;
+            like.UserId = likeDto.UserId;
 
             try
             {
@@ -77,8 +96,9 @@ namespace wakeApi.Controllers
         // POST: api/Likes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Like>> PostLike(Like like)
+        public async Task<ActionResult<LikeDto>> PostLike(LikeDto likeDto)
         {
+            var like = _mapper.Map<Like>(likeDto);
             _context.Likes.Add(like);
             await _context.SaveChangesAsync();
 
@@ -105,5 +125,15 @@ namespace wakeApi.Controllers
         {
             return _context.Likes.Any(e => e.Id == id);
         }
+
+        private static LikeDto ItemToDto(Like like) =>
+            new LikeDto
+            {
+                Id = like.Id,
+                CountLike = like.CountLike,
+                CountDislike = like.CountDislike,
+                PostId = like.PostId,
+                UserId = like.UserId
+            };
     }
 }

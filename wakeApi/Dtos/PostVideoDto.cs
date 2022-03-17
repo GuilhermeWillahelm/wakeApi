@@ -11,11 +11,7 @@ namespace wakeApi.Dtos
         [DataType(DataType.Date)]
         public DateTime Posted { get; set; }
         public string Video { get; set; } = string.Empty;
-        [NotMapped]
-        public FormFile? FileVideo { get; set; }
         public string ThumbImage { get; set; } = string.Empty;
-        [NotMapped]
-        public FormFile? FileImage { get; set; }
         public int UserId { get; set; }
         public virtual UserDto? UserDto { get; set; }
     }

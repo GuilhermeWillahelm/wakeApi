@@ -5,9 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using wakeApi.Data;
+using wakeApi.Dtos;
+using wakeApi.Identity;
 using wakeApi.Models;
+using AutoMapper;
 
 namespace wakeApi.Controllers
 {
@@ -16,22 +20,26 @@ namespace wakeApi.Controllers
     public class CommentsController : ControllerBase
     {
         private readonly WakeContext _context;
+        private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
 
-        public CommentsController(WakeContext context)
+        public CommentsController(WakeContext context, IMapper mapper, UserManager<User> userManager)
         {
             _context = context;
+            _mapper = mapper;
+            _userManager = userManager;
         }
 
         // GET: api/Comments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Comment>>> GetComments()
+        public async Task<ActionResult<IEnumerable<CommentDto>>> GetComments()
         {
-            return await _context.Comments.ToListAsync();
+            return await _context.Comments.Select(c => ItemToDto(c)).ToListAsync();
         }
 
         // GET: api/Comments/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Comment>> GetComment(int id)
+        public async Task<ActionResult<CommentDto>> GetComment(int id)
         {
             var comment = await _context.Comments.FindAsync(id);
 
@@ -40,21 +48,32 @@ namespace wakeApi.Controllers
                 return NotFound();
             }
 
-            return comment;
+            return ItemToDto(comment);
         }
 
         // PUT: api/Comments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutComment(int id, Comment comment)
+        [HttpPut("UpdateComment/{id}")]
+        public async Task<IActionResult> UpdateComment(int id, CommentDto commentDto)
         {
-            if (id != comment.Id)
+            if (id != commentDto.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(comment).State = EntityState.Modified;
+            var comment = await _context.Comments.FindAsync(id);
 
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            _context.Entry(comment).State = EntityState.Modified;
+            comment.Id = id;
+            comment.CommentText = commentDto.CommentText;
+            comment.UserId = commentDto.UserId;
+            comment.PostId = commentDto.PostId;
+            
             try
             {
                 await _context.SaveChangesAsync();
@@ -77,8 +96,9 @@ namespace wakeApi.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Comment>> PostComment(Comment comment)
+        public async Task<ActionResult<Comment>> PostComment(CommentDto commentDto)
         {
+            var comment = _mapper.Map<Comment>(commentDto);
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
 
@@ -105,5 +125,14 @@ namespace wakeApi.Controllers
         {
             return _context.Comments.Any(e => e.Id == id);
         }
+
+        private static CommentDto ItemToDto(Comment comment) =>
+            new CommentDto 
+            {
+                Id = comment.Id,
+                CommentText = comment.CommentText,
+                PostId = comment.PostId,
+                UserId = comment.UserId,
+            };  
     }
 }

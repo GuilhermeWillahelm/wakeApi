@@ -30,9 +30,7 @@ namespace wakeApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PostVideoDto>>> GetPostVideos()
         {
-            return await _context.PostVideos
-                .Select(x => ItemToDTO(x))
-                .ToListAsync();
+            return await _context.PostVideos.Select(x => ItemToDTO(x)).ToListAsync();
         }
 
         [HttpGet("{id}")]
@@ -49,8 +47,9 @@ namespace wakeApi.Controllers
             return Ok(postItem);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> PutPostVideo(int id, PostVideoDto postVideoDto)
+        [HttpPut("UpdatePostVideo/{id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult> UpdatePostVideo(int id, PostVideoDto postVideoDto)
         {
             if (id != postVideoDto.Id)
             {
@@ -63,9 +62,13 @@ namespace wakeApi.Controllers
             {
                 return NotFound();
             }
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            postItem = _mapper.Map<PostVideo>(postVideoDto);
-            postItem.UserId= user.Id;
+
+            postItem.Id = id;
+            postItem.Title = postVideoDto.Title;
+            postItem.Description = postVideoDto.Description;
+            postItem.Video = postVideoDto.Video;
+            postItem.ThumbImage = postVideoDto.ThumbImage;
+            postItem.UserId = postVideoDto.UserId;
 
             try
             {
@@ -83,10 +86,7 @@ namespace wakeApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> CreatePostVideo(PostVideoDto postVideoDto)
         {
-
-            var user = await _userManager.GetUserAsync(HttpContext.User);
             var post = _mapper.Map<PostVideo>(postVideoDto);
-            post.UserId = user.Id;
             _context.PostVideos.Add(post);
 
             await _context.SaveChangesAsync();
@@ -124,9 +124,7 @@ namespace wakeApi.Controllers
                 Description = todoItem.Description,
                 Posted = todoItem.Posted,
                 Video  = todoItem.Video,
-                FileVideo = todoItem.FileVideo,
                 ThumbImage = todoItem.ThumbImage,
-                FileImage = todoItem.FileImage,
                 UserId = todoItem.UserId,
                 
             };

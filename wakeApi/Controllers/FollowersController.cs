@@ -5,9 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using wakeApi.Data;
+using wakeApi.Identity;
 using wakeApi.Models;
+using wakeApi.Dtos;
+using AutoMapper;
 
 namespace wakeApi.Controllers
 {
@@ -16,22 +20,26 @@ namespace wakeApi.Controllers
     public class FollowersController : ControllerBase
     {
         private readonly WakeContext _context;
+        private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
 
-        public FollowersController(WakeContext context)
+        public FollowersController(WakeContext context, IMapper mapper, UserManager<User> userManager)
         {
             _context = context;
+            _mapper = mapper;
+            _userManager = userManager;
         }
 
         // GET: api/Followers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Follower>>> GetFollowers()
+        public async Task<ActionResult<IEnumerable<FollowerDto>>> GetFollowers()
         {
-            return await _context.Followers.ToListAsync();
+            return await _context.Followers.Select(f => ItemToDto(f)).ToListAsync();
         }
 
         // GET: api/Followers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Follower>> GetFollower(int id)
+        public async Task<ActionResult<FollowerDto>> GetFollower(int id)
         {
             var follower = await _context.Followers.FindAsync(id);
 
@@ -40,20 +48,30 @@ namespace wakeApi.Controllers
                 return NotFound();
             }
 
-            return follower;
+            return ItemToDto(follower);
         }
 
         // PUT: api/Followers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutFollower(int id, Follower follower)
+        [HttpPut("UpdateFollower/{id}")]
+        public async Task<IActionResult> UpdateFollower(int id, FollowerDto followerDto)
         {
-            if (id != follower.Id)
+            if (id != followerDto.Id)
             {
                 return BadRequest();
             }
+            var follower = await _context.Followers.FindAsync(id);
+
+            if (follower == null)
+            {
+                return NotFound();
+            }
 
             _context.Entry(follower).State = EntityState.Modified;
+
+            follower.Id = followerDto.Id;
+            follower.FollowerName = followerDto.FollowerName;
+            follower.UserId = followerDto.UserId;
 
             try
             {
@@ -77,8 +95,9 @@ namespace wakeApi.Controllers
         // POST: api/Followers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Follower>> PostFollower(Follower follower)
+        public async Task<ActionResult> PostFollower(FollowerDto followerDto)
         {
+            var follower = _mapper.Map<Follower>(followerDto);
             _context.Followers.Add(follower);
             await _context.SaveChangesAsync();
 
@@ -105,5 +124,15 @@ namespace wakeApi.Controllers
         {
             return _context.Followers.Any(e => e.Id == id);
         }
+
+        private static FollowerDto ItemToDto(Follower follower) =>
+            new FollowerDto 
+            {
+                Id = follower.Id,
+                FollowerName = follower.FollowerName,
+                UserId = follower.UserId,
+                
+            };
+        
     }
 }
