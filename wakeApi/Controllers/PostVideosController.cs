@@ -28,11 +28,11 @@ namespace wakeApi.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<PostVideo>>> GetPostVideos()
+        public async Task<ActionResult<IEnumerable<PostVideoDto>>> GetPostVideos()
         {
-            var posts = await _context.PostVideos.ToListAsync();
-            return Ok(posts);
+            return await _context.PostVideos
+                .Select(x => ItemToDTO(x))
+                .ToListAsync();
         }
 
         [HttpGet("{id}")]
@@ -50,10 +50,9 @@ namespace wakeApi.Controllers
         }
 
         [HttpPut("{id}")]
-        [AllowAnonymous]
-        public async Task<ActionResult<PostVideo>> PutPostVideo(int id, PostVideo postVideo)
+        public async Task<ActionResult> PutPostVideo(int id, PostVideoDto postVideoDto)
         {
-            if (id != postVideo.Id)
+            if (id != postVideoDto.Id)
             {
                 return BadRequest();
             }
@@ -64,6 +63,9 @@ namespace wakeApi.Controllers
             {
                 return NotFound();
             }
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            postItem = _mapper.Map<PostVideo>(postVideoDto);
+            postItem.UserId= user.Id;
 
             try
             {
@@ -114,6 +116,20 @@ namespace wakeApi.Controllers
         {
             return _context.PostVideos.Any(x => x.Id == id);
         }
+
+        private static PostVideoDto ItemToDTO(PostVideo todoItem) =>
+            new PostVideoDto
+            {
+                Title = todoItem.Title,
+                Description = todoItem.Description,
+                Posted = todoItem.Posted,
+                Video  = todoItem.Video,
+                FileVideo = todoItem.FileVideo,
+                ThumbImage = todoItem.ThumbImage,
+                FileImage = todoItem.FileImage,
+                UserId = todoItem.UserId,
+                
+            };
 
 
     }
