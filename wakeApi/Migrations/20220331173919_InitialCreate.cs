@@ -147,7 +147,7 @@ namespace wakeApi.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Posted = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Video = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VideoFile = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ThumbImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },

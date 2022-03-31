@@ -13,6 +13,7 @@ using AutoMapper;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("WakeDbConnection");
 var appSettingsToken = builder.Configuration.GetSection("AppSettings:Token").Value;
+var MyAllowSpecificOrigins = "_myAllowSpecifiOrigins";
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -21,7 +22,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<WakeContext>(option => option.UseSqlServer(connectionString));
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins, builder => { builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin(); });
+});
 
 IdentityBuilder identityBuilder = builder.Services.AddIdentityCore<User>(option => option.SignIn.RequireConfirmedEmail = true);
 identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(Role), builder.Services);
@@ -62,6 +66,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 app.UseAuthentication();

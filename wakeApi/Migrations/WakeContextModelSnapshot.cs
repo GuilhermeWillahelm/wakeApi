@@ -383,7 +383,7 @@ namespace wakeApi.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Video")
+                    b.Property<string>("VideoFile")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Hosting;
 
 namespace wakeApi.Controllers
 {
@@ -19,15 +22,19 @@ namespace wakeApi.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
-        public PostVideosController(WakeContext context, SignInManager<User> signInManager, IMapper mapper, UserManager<User> userManager)
+        public static IWebHostEnvironment _env;
+
+        public PostVideosController(WakeContext context, SignInManager<User> signInManager, IMapper mapper, UserManager<User> userManager, IWebHostEnvironment env)
         {
             _context = context;
             _signInManager = signInManager;
             _mapper = mapper;
             _userManager = userManager;
+            _env = env;
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<PostVideoDto>>> GetPostVideos()
         {
             return await _context.PostVideos.Select(x => ItemToDTO(x)).ToListAsync();
@@ -66,7 +73,7 @@ namespace wakeApi.Controllers
             postItem.Id = id;
             postItem.Title = postVideoDto.Title;
             postItem.Description = postVideoDto.Description;
-            postItem.Video = postVideoDto.Video;
+            postItem.VideoFile = postVideoDto.VideoFile;
             postItem.ThumbImage = postVideoDto.ThumbImage;
             postItem.UserId = postVideoDto.UserId;
 
@@ -86,6 +93,7 @@ namespace wakeApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> CreatePostVideo(PostVideoDto postVideoDto)
         {
+
             var post = _mapper.Map<PostVideo>(postVideoDto);
             _context.PostVideos.Add(post);
 
@@ -120,15 +128,14 @@ namespace wakeApi.Controllers
         private static PostVideoDto ItemToDTO(PostVideo todoItem) =>
             new PostVideoDto
             {
+                Id = todoItem.Id,
                 Title = todoItem.Title,
                 Description = todoItem.Description,
                 Posted = todoItem.Posted,
-                Video  = todoItem.Video,
+                VideoFile = todoItem.VideoFile,
                 ThumbImage = todoItem.ThumbImage,
                 UserId = todoItem.UserId,
-                
+
             };
-
-
     }
 }

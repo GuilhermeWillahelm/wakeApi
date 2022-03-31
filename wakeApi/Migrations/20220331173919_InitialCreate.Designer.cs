@@ -12,7 +12,7 @@ using wakeApi.Data;
 namespace wakeApi.Migrations
 {
     [DbContext(typeof(WakeContext))]
-    [Migration("20220316135015_InitialCreate")]
+    [Migration("20220331173919_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -385,7 +385,7 @@ namespace wakeApi.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Video")
+                    b.Property<string>("VideoFile")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
