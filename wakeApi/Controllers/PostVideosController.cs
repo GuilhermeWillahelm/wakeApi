@@ -35,9 +35,17 @@ namespace wakeApi.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<PostVideoDto>>> GetPostVideos()
+        public async Task<ActionResult<IEnumerable<PostVideoDto>>> GetPostVideos(string? searchString)
         {
-            return await _context.PostVideos.Select(x => ItemToDTO(x)).ToListAsync();
+            var postVideo = from p in _context.PostVideos select p;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                //posts = posts.Where(s => s.Title!.Contains(searchString) || s.Description.Contains(searchString));
+                postVideo = postVideo.Where(x => x.Title!.Contains(searchString) || x.Description.Contains(searchString));
+            }
+
+            return await postVideo.Select(x => ItemToDTO(x)).ToListAsync();
         }
 
         [HttpGet("{id}")]
