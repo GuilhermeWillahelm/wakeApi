@@ -62,6 +62,21 @@ namespace wakeApi.Controllers
             return Ok(postItem);
         }
 
+        [HttpGet("GetPostVideoById/{id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<PostVideoDto>>> GetPostVideoById(int id)
+        {
+            var postVideo = from p in _context.PostVideos select p;
+            postVideo = postVideo.Where(p => p.UserId == id);
+
+            if (postVideo == null)
+            {
+                return NotFound();
+            }
+
+            return await postVideo.Select(x => ItemToDTO(x)).ToListAsync();
+        }
+
         [HttpPut("UpdatePostVideo/{id}")]
         [AllowAnonymous]
         public async Task<ActionResult> UpdatePostVideo(int id, PostVideoDto postVideoDto)

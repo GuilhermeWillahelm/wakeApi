@@ -12,6 +12,7 @@ using wakeApi.Identity;
 using wakeApi.Dtos;
 using wakeApi.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace wakeApi.Controllers
 {
@@ -32,6 +33,7 @@ namespace wakeApi.Controllers
 
         // GET: api/Channels
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ChannelDto>>> GetChannels()
         {
             return await _context.Channels.Select(c => ItemToDto(c)).ToListAsync();
@@ -39,6 +41,7 @@ namespace wakeApi.Controllers
 
         // GET: api/Channels/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<ChannelDto>> GetChannel(int id)
         {
             var channel = await _context.Channels.FindAsync(id);
@@ -51,9 +54,25 @@ namespace wakeApi.Controllers
             return ItemToDto(channel);
         }
 
+        [HttpGet("GetChannelByUser/{userId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ChannelDto>> GetChannelByUser(int userId)
+        {
+
+            var channel = await _context.Channels.Where(c => c.UserId == userId).FirstOrDefaultAsync();
+
+            if (channel == null)
+            {
+                return NotFound();
+            }
+
+            return ItemToDto(channel);
+        }
+
         // PUT: api/Channels/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("UpdateChannel/{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateChannel(int id, ChannelDto channelDto)
         {
             if (id != channelDto.Id)
@@ -98,6 +117,7 @@ namespace wakeApi.Controllers
         // POST: api/Channels
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<ChannelDto>> PostChannel(ChannelDto channelDto)
         {
             var channel = _mapper.Map<Channel>(channelDto);
@@ -109,6 +129,7 @@ namespace wakeApi.Controllers
 
         // DELETE: api/Channels/5
         [HttpDelete("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> DeleteChannel(int id)
         {
             var channel = await _context.Channels.FindAsync(id);

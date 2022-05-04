@@ -48,6 +48,7 @@ namespace wakeApi.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<User>> GetUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -131,10 +132,7 @@ namespace wakeApi.Controllers
 
                     var userToReturn = _mapper.Map<UserLoginDto>(appUser);
 
-                    return Ok(new {
-                        token = GenerateJWToken(appUser).Result, 
-                        user = userToReturn}
-                    );
+                    return Ok(new {userToReturn.Id, userToReturn.UserName, token = GenerateJWToken(appUser).Result } );
                 }
 
                 return Unauthorized();
