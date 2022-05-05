@@ -251,13 +251,15 @@ namespace wakeApi.Migrations
                     b.Property<DateTime>("CreatedChanel")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("FollowerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FollwerId")
-                        .HasColumnType("int");
+                    b.Property<string>("IconChannel")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageBanner")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubtitleChannel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -265,8 +267,6 @@ namespace wakeApi.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FollowerId");
 
                     b.HasIndex("UserId");
 
@@ -460,17 +460,11 @@ namespace wakeApi.Migrations
 
             modelBuilder.Entity("wakeApi.Models.Channel", b =>
                 {
-                    b.HasOne("wakeApi.Models.Follower", "Follower")
-                        .WithMany()
-                        .HasForeignKey("FollowerId");
-
                     b.HasOne("wakeApi.Identity.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Follower");
 
                     b.Navigation("User");
                 });

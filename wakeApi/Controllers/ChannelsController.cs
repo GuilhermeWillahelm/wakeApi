@@ -93,7 +93,6 @@ namespace wakeApi.Controllers
             channel.CreatedChanel = channelDto.CreatedChanel;
             channel.ImageBanner = channelDto.ImageBanner;
             channel.UserId = channelDto.UserId;
-            channel.FollwerId = channelDto.FollwerId;
 
             try
             {
@@ -154,11 +153,12 @@ namespace wakeApi.Controllers
             {
                 Id = channel.Id,
                 ChannelName =  channel.ChannelName,
+                SubtitleChannel = channel.SubtitleChannel,
                 ChannelDescription = channel.ChannelDescription,
                 CreatedChanel = channel.CreatedChanel,
                 ImageBanner = channel.ImageBanner,
+                IconChannel = channel.IconChannel,
                 UserId = channel.UserId,
-                FollwerId = channel.FollwerId,
             };
     }
 }
