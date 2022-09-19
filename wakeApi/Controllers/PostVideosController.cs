@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Hosting;
 
 namespace wakeApi.Controllers
@@ -45,21 +43,21 @@ namespace wakeApi.Controllers
                 postVideo = postVideo.Where(x => x.Title!.Contains(searchString) || x.Description.Contains(searchString));
             }
 
-            return await postVideo.Select(x => ItemToDTO(x)).ToListAsync();
+            return await postVideo.Include(c => c.Channel).Select(x => ItemToDTO(x)).ToListAsync();
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<ActionResult<PostVideo>> GetPostVideo(int id)
+        public async Task<ActionResult<IEnumerable<PostVideoDto>>> GetPostVideo(int id)
         {
-            var postItem = await _context.PostVideos.FindAsync(id);
+            var postVideo = from p in _context.PostVideos.Where(p => p.Id == id) select p;
 
-            if (postItem == null)
+            if (postVideo == null)
             {
                 return NotFound();
             }
 
-            return Ok(postItem);
+            return await postVideo.Include(c => c.Channel).Select(x => ItemToDTO(x)).ToListAsync();
         }
 
         [HttpGet("GetPostVideoById/{id}")]
@@ -74,7 +72,7 @@ namespace wakeApi.Controllers
                 return NotFound();
             }
 
-            return await postVideo.Select(x => ItemToDTO(x)).ToListAsync();
+            return await postVideo.Include(c => c.Channel).Select(x => ItemToDTO(x)).ToListAsync();
         }
 
         [HttpPut("UpdatePostVideo/{id}")]
@@ -158,6 +156,12 @@ namespace wakeApi.Controllers
                 VideoFile = todoItem.VideoFile,
                 ThumbImage = todoItem.ThumbImage,
                 UserId = todoItem.UserId,
+                ChannelId = todoItem.ChannelId,
+                ChannelDto = new ChannelDto
+                {
+                    ChannelName = todoItem.Channel.ChannelName,
+                    IconChannel = todoItem.Channel.IconChannel
+                }
 
             };
     }

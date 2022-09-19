@@ -15,5 +15,8 @@ namespace wakeApi.Models
         public string ThumbImage { get; set; } = string.Empty;
         public int UserId { get; set; }
         public virtual User? User { get; set; }
+        public int ChannelId { get; set; }
+        [ForeignKey("ChannelId")]
+        public virtual Channel? Channel { get; set; }
     }
 }

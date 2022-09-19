@@ -164,30 +164,6 @@ namespace wakeApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PostVideos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Posted = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    VideoFile = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ThumbImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PostVideos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PostVideos_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -230,6 +206,37 @@ namespace wakeApi.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PostVideos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Posted = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    VideoFile = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ThumbImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ChannelId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PostVideos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PostVideos_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PostVideos_Channels_ChannelId",
+                        column: x => x.ChannelId,
+                        principalTable: "Channels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -362,6 +369,11 @@ namespace wakeApi.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PostVideos_ChannelId",
+                table: "PostVideos",
+                column: "ChannelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PostVideos_UserId",
                 table: "PostVideos",
                 column: "UserId");
@@ -385,9 +397,6 @@ namespace wakeApi.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Channels");
-
-            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
@@ -401,6 +410,9 @@ namespace wakeApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "PostVideos");
+
+            migrationBuilder.DropTable(
+                name: "Channels");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

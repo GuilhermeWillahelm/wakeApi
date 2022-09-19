@@ -14,5 +14,7 @@ namespace wakeApi.Dtos
         public string ThumbImage { get; set; } = string.Empty;
         public int UserId { get; set; }
         public virtual UserDto? UserDto { get; set; }
+        public int ChannelId { get; set; }
+        public virtual ChannelDto? ChannelDto { get; set; }
     }
 }

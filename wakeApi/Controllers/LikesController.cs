@@ -12,6 +12,7 @@ using wakeApi.Dtos;
 using wakeApi.Identity;
 using wakeApi.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace wakeApi.Controllers
 {
@@ -32,6 +33,7 @@ namespace wakeApi.Controllers
 
         // GET: api/Likes
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<LikeDto>>> GetLikes()
         {
             return await _context.Likes.Select(l => ItemToDto(l)).ToListAsync();
@@ -39,6 +41,7 @@ namespace wakeApi.Controllers
 
         // GET: api/Likes/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<LikeDto>> GetLike(int id)
         {
             var like = await _context.Likes.FindAsync(id);
@@ -54,6 +57,7 @@ namespace wakeApi.Controllers
         // PUT: api/Likes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> PutLike(int id, LikeDto likeDto)
         {
             if (id != likeDto.Id)
@@ -96,6 +100,7 @@ namespace wakeApi.Controllers
         // POST: api/Likes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<LikeDto>> PostLike(LikeDto likeDto)
         {
             var like = _mapper.Map<Like>(likeDto);
@@ -107,6 +112,7 @@ namespace wakeApi.Controllers
 
         // DELETE: api/Likes/5
         [HttpDelete("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> DeleteLike(int id)
         {
             var like = await _context.Likes.FindAsync(id);

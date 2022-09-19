@@ -31,6 +31,15 @@ namespace wakeApi.Data
                 userRole.HasOne(ur => ur.User).WithMany(r => r.UserRoles)
                 .HasForeignKey(u => u.UserId).IsRequired();
             });
+
+            builder.Entity<PostVideo>(postVideo =>
+            {
+                postVideo.HasOne(c => c.Channel)
+                .WithMany(p => p.PostVideos).HasForeignKey(k => k.ChannelId);
+
+                postVideo.HasOne(c => c.Channel)
+                .WithMany(p => p.PostVideos).HasForeignKey(k => k.ChannelId);
+            });
         }
 
     }

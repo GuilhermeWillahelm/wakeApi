@@ -17,5 +17,7 @@ namespace wakeApi.Models
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual User? User { get; set; }
+
+        public List<PostVideo>? PostVideos { get; set; }
     }
 }
