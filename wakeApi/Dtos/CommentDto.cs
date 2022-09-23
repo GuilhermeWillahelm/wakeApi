@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using wakeApi.Models;
 
 namespace wakeApi.Dtos
 {
@@ -8,8 +9,9 @@ namespace wakeApi.Dtos
         [Column(TypeName = "nvarchar(2000)")]
         public string CommentText { get; set; } = string.Empty;
         public int UserId { get; set; }
-        public virtual UserDto? User { get; set; }
+        public int ChannelId { get; set; }
         public int PostId { get; set; }
-        public virtual PostVideoDto? PostVideo { get; set; }
+        public bool Flag { get; set; }
+        public List<PostVideo>? PostVideos { get; set; }
     }
 }

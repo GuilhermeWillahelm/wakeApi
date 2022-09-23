@@ -35,10 +35,16 @@ namespace wakeApi.Data
             builder.Entity<PostVideo>(postVideo =>
             {
                 postVideo.HasOne(c => c.Channel)
-                .WithMany(p => p.PostVideos).HasForeignKey(k => k.ChannelId);
+                .WithMany(p => p.PostVideos)
+                .HasForeignKey(k => k.ChannelId).OnDelete(DeleteBehavior.Restrict);
 
-                postVideo.HasOne(c => c.Channel)
-                .WithMany(p => p.PostVideos).HasForeignKey(k => k.ChannelId);
+                postVideo.HasOne(ct => ct.Comment)
+                .WithMany(p => p.PostVideos)
+                .HasForeignKey(k => k.CommentId).OnDelete(DeleteBehavior.Restrict);
+
+                postVideo.HasOne(l => l.Like)
+                .WithMany(p => p.PostVideos)
+                .HasForeignKey(k => k.LikeId).OnDelete(DeleteBehavior.Restrict);
             });
         }
 

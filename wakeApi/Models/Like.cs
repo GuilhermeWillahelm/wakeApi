@@ -1,4 +1,7 @@
-﻿using wakeApi.Identity;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using wakeApi.Dtos;
+using wakeApi.Identity;
 
 namespace wakeApi.Models
 {
@@ -8,9 +11,10 @@ namespace wakeApi.Models
         public int CountLike { get; set; }
         public int CountDislike { get; set; }
         public int UserId { get; set; }
-        public virtual User? User { get; set; }
+        public int ChannelId { get; set; }
         public int PostId { get; set; }
-        public virtual PostVideo? PostVideo { get; set; }
-        
+        public bool Flag { get; set; }
+        public List<PostVideo>? PostVideos { get; set; }
+
     }
 }

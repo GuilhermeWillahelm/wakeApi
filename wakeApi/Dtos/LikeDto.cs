@@ -1,4 +1,6 @@
-﻿namespace wakeApi.Dtos
+﻿using wakeApi.Models;
+
+namespace wakeApi.Dtos
 {
     public class LikeDto
     {
@@ -6,8 +8,9 @@
         public int CountLike { get; set; }
         public int CountDislike { get; set; }
         public int UserId { get; set; }
-        public virtual UserDto? User { get; set; }
+        public int ChannelId { get; set; }
         public int PostId { get; set; }
-        public virtual PostVideoDto? PostVideo { get; set; }
+        public bool Flag { get; set; }
+        public List<PostVideo>? PostVideos { get; set; }
     }
 }

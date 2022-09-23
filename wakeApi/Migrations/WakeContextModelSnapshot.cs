@@ -281,24 +281,23 @@ namespace wakeApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("ChannelId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CommentText")
                         .IsRequired()
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
+                    b.Property<bool>("Flag")
+                        .HasColumnType("bit");
 
-                    b.Property<int?>("PostVideoId")
+                    b.Property<int>("PostId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PostVideoId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -333,26 +332,25 @@ namespace wakeApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("ChannelId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CountDislike")
                         .HasColumnType("int");
 
                     b.Property<int>("CountLike")
                         .HasColumnType("int");
 
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
+                    b.Property<bool>("Flag")
+                        .HasColumnType("bit");
 
-                    b.Property<int?>("PostVideoId")
+                    b.Property<int>("PostId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PostVideoId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Likes");
                 });
@@ -368,9 +366,15 @@ namespace wakeApi.Migrations
                     b.Property<int>("ChannelId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LikeId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Posted")
                         .HasColumnType("datetime2");
@@ -393,6 +397,10 @@ namespace wakeApi.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ChannelId");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("LikeId");
 
                     b.HasIndex("UserId");
 
@@ -474,23 +482,6 @@ namespace wakeApi.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("wakeApi.Models.Comment", b =>
-                {
-                    b.HasOne("wakeApi.Models.PostVideo", "PostVideo")
-                        .WithMany()
-                        .HasForeignKey("PostVideoId");
-
-                    b.HasOne("wakeApi.Identity.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PostVideo");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("wakeApi.Models.Follower", b =>
                 {
                     b.HasOne("wakeApi.Identity.User", "User")
@@ -502,29 +493,24 @@ namespace wakeApi.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("wakeApi.Models.Like", b =>
-                {
-                    b.HasOne("wakeApi.Models.PostVideo", "PostVideo")
-                        .WithMany()
-                        .HasForeignKey("PostVideoId");
-
-                    b.HasOne("wakeApi.Identity.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PostVideo");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("wakeApi.Models.PostVideo", b =>
                 {
                     b.HasOne("wakeApi.Models.Channel", "Channel")
-                        .WithMany()
+                        .WithMany("PostVideos")
                         .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("wakeApi.Models.Comment", "Comment")
+                        .WithMany("PostVideos")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("wakeApi.Models.Like", "Like")
+                        .WithMany("PostVideos")
+                        .HasForeignKey("LikeId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("wakeApi.Identity.User", "User")
@@ -534,6 +520,10 @@ namespace wakeApi.Migrations
                         .IsRequired();
 
                     b.Navigation("Channel");
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("Like");
 
                     b.Navigation("User");
                 });
@@ -546,6 +536,21 @@ namespace wakeApi.Migrations
             modelBuilder.Entity("wakeApi.Identity.User", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("wakeApi.Models.Channel", b =>
+                {
+                    b.Navigation("PostVideos");
+                });
+
+            modelBuilder.Entity("wakeApi.Models.Comment", b =>
+                {
+                    b.Navigation("PostVideos");
+                });
+
+            modelBuilder.Entity("wakeApi.Models.Like", b =>
+                {
+                    b.Navigation("PostVideos");
                 });
 #pragma warning restore 612, 618
         }

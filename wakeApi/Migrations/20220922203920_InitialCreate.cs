@@ -37,6 +37,41 @@ namespace wakeApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CommentText = table.Column<string>(type: "nvarchar(2000)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ChannelId = table.Column<int>(type: "int", nullable: false),
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    Flag = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Likes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CountLike = table.Column<int>(type: "int", nullable: false),
+                    CountDislike = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ChannelId = table.Column<int>(type: "int", nullable: false),
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    Flag = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Likes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -220,7 +255,9 @@ namespace wakeApi.Migrations
                     VideoFile = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ThumbImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    ChannelId = table.Column<int>(type: "int", nullable: false)
+                    ChannelId = table.Column<int>(type: "int", nullable: false),
+                    LikeId = table.Column<int>(type: "int", nullable: false),
+                    CommentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -230,68 +267,25 @@ namespace wakeApi.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PostVideos_Channels_ChannelId",
                         column: x => x.ChannelId,
                         principalTable: "Channels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Comments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CommentText = table.Column<string>(type: "nvarchar(2000)", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    PostId = table.Column<int>(type: "int", nullable: false),
-                    PostVideoId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_PostVideos_Comments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Comments_PostVideos_PostVideoId",
-                        column: x => x.PostVideoId,
-                        principalTable: "PostVideos",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Likes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CountLike = table.Column<int>(type: "int", nullable: false),
-                    CountDislike = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    PostId = table.Column<int>(type: "int", nullable: false),
-                    PostVideoId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Likes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Likes_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_PostVideos_Likes_LikeId",
+                        column: x => x.LikeId,
+                        principalTable: "Likes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Likes_PostVideos_PostVideoId",
-                        column: x => x.PostVideoId,
-                        principalTable: "PostVideos",
-                        principalColumn: "Id");
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -344,34 +338,24 @@ namespace wakeApi.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_PostVideoId",
-                table: "Comments",
-                column: "PostVideoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comments_UserId",
-                table: "Comments",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Followers_UserId",
                 table: "Followers",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Likes_PostVideoId",
-                table: "Likes",
-                column: "PostVideoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Likes_UserId",
-                table: "Likes",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PostVideos_ChannelId",
                 table: "PostVideos",
                 column: "ChannelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostVideos_CommentId",
+                table: "PostVideos",
+                column: "CommentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostVideos_LikeId",
+                table: "PostVideos",
+                column: "LikeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PostVideos_UserId",
@@ -397,22 +381,22 @@ namespace wakeApi.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Comments");
-
-            migrationBuilder.DropTable(
                 name: "Followers");
-
-            migrationBuilder.DropTable(
-                name: "Likes");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "PostVideos");
 
             migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
                 name: "Channels");
+
+            migrationBuilder.DropTable(
+                name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "Likes");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

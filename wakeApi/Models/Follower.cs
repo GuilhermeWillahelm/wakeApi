@@ -1,4 +1,5 @@
-﻿using wakeApi.Identity;
+﻿using MessagePack;
+using wakeApi.Identity;
 
 namespace wakeApi.Models
 {

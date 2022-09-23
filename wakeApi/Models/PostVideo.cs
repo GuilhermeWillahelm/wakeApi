@@ -13,10 +13,14 @@ namespace wakeApi.Models
         public DateTime Posted { get; set; }
         public string VideoFile { get; set; } = string.Empty;
         public string ThumbImage { get; set; } = string.Empty;
+        [ForeignKey("UserId")]
         public int UserId { get; set; }
         public virtual User? User { get; set; }
         public int ChannelId { get; set; }
-        [ForeignKey("ChannelId")]
         public virtual Channel? Channel { get; set; }
+        public int LikeId { get; set; }
+        public virtual Like? Like { get; set; }
+        public int CommentId { get; set; }
+        public virtual Comment? Comment { get; set; }
     }
 }

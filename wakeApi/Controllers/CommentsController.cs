@@ -12,6 +12,7 @@ using wakeApi.Dtos;
 using wakeApi.Identity;
 using wakeApi.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace wakeApi.Controllers
 {
@@ -96,6 +97,7 @@ namespace wakeApi.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<Comment>> PostComment(CommentDto commentDto)
         {
             var comment = _mapper.Map<Comment>(commentDto);

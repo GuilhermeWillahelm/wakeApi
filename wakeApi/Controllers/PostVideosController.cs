@@ -43,7 +43,7 @@ namespace wakeApi.Controllers
                 postVideo = postVideo.Where(x => x.Title!.Contains(searchString) || x.Description.Contains(searchString));
             }
 
-            return await postVideo.Include(c => c.Channel).Select(x => ItemToDTO(x)).ToListAsync();
+            return await postVideo.Include(c => c.Channel).Include(l => l.Like).Include(ct => ct.Comment).Select(x => ItemToDTO(x)).ToListAsync();
         }
 
         [HttpGet("{id}")]
@@ -57,7 +57,9 @@ namespace wakeApi.Controllers
                 return NotFound();
             }
 
-            return await postVideo.Include(c => c.Channel).Select(x => ItemToDTO(x)).ToListAsync();
+            return await postVideo.Include(c => c.Channel)
+                .Include(l => l.Like).Include(c => c.Comment)
+                .Select(x => ItemToDTO(x)).ToListAsync();
         }
 
         [HttpGet("GetPostVideoById/{id}")]
@@ -72,7 +74,9 @@ namespace wakeApi.Controllers
                 return NotFound();
             }
 
-            return await postVideo.Include(c => c.Channel).Select(x => ItemToDTO(x)).ToListAsync();
+            return await postVideo.Include(c => c.Channel)
+                .Include(l => l.Like)
+                .Include(ct => ct.Comment).Select(x => ItemToDTO(x)).ToListAsync();
         }
 
         [HttpPut("UpdatePostVideo/{id}")]
@@ -118,7 +122,7 @@ namespace wakeApi.Controllers
             var post = _mapper.Map<PostVideo>(postVideoDto);
             _context.PostVideos.Add(post);
 
-            await _context.SaveChangesAsync();
+           await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(PostVideo), new { id = post.Id }, post);
 
@@ -161,6 +165,17 @@ namespace wakeApi.Controllers
                 {
                     ChannelName = todoItem.Channel.ChannelName,
                     IconChannel = todoItem.Channel.IconChannel
+                },
+                LikeId = todoItem.LikeId,
+                LikeDto = new LikeDto
+                {
+                    CountLike = todoItem.Like.CountLike,
+                    CountDislike = todoItem.Like.CountDislike
+                },
+                CommentId = todoItem.CommentId,
+                CommentDto = new CommentDto
+                {
+                    CommentText = todoItem.Comment.CommentText
                 }
 
             };
