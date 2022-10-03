@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace wakeApi.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,7 +54,7 @@ namespace wakeApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Likes",
+                name: "Evaluations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -68,7 +68,7 @@ namespace wakeApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => x.Id);
+                    table.PrimaryKey("PK_Evaluations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -256,7 +256,7 @@ namespace wakeApi.Migrations
                     ThumbImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     ChannelId = table.Column<int>(type: "int", nullable: false),
-                    LikeId = table.Column<int>(type: "int", nullable: false),
+                    EvaluationId = table.Column<int>(type: "int", nullable: false),
                     CommentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -279,11 +279,11 @@ namespace wakeApi.Migrations
                         column: x => x.CommentId,
                         principalTable: "Comments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PostVideos_Likes_LikeId",
-                        column: x => x.LikeId,
-                        principalTable: "Likes",
+                        name: "FK_PostVideos_Evaluations_EvaluationId",
+                        column: x => x.EvaluationId,
+                        principalTable: "Evaluations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -353,9 +353,9 @@ namespace wakeApi.Migrations
                 column: "CommentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostVideos_LikeId",
+                name: "IX_PostVideos_EvaluationId",
                 table: "PostVideos",
-                column: "LikeId");
+                column: "EvaluationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PostVideos_UserId",
@@ -396,7 +396,7 @@ namespace wakeApi.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Likes");
+                name: "Evaluations");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

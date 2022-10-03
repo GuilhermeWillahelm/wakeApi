@@ -35,7 +35,8 @@ namespace wakeApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<PostVideoDto>>> GetPostVideos(string? searchString)
         {
-            var postVideo = from p in _context.PostVideos select p;
+            var postVideo = from p in _context.PostVideos.Include(c => c.Channel)
+                            .Include(e => e.Evaluation).Include(ct => ct.Comment) select p;
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -43,23 +44,23 @@ namespace wakeApi.Controllers
                 postVideo = postVideo.Where(x => x.Title!.Contains(searchString) || x.Description.Contains(searchString));
             }
 
-            return await postVideo.Include(c => c.Channel).Include(l => l.Like).Include(ct => ct.Comment).Select(x => ItemToDTO(x)).ToListAsync();
+            return await postVideo.Select(x => ItemToDTO(x)).ToListAsync();
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<PostVideoDto>>> GetPostVideo(int id)
+        public async Task<ActionResult<PostVideoDto>> GetPostVideo(int id)
         {
-            var postVideo = from p in _context.PostVideos.Where(p => p.Id == id) select p;
+            var postVideo = await _context.PostVideos.Include(c => c.Channel)
+                .Include(e => e.Evaluation).Include(ct => ct.Comment)
+                .Where(p => p.Id == id).FirstAsync();
 
             if (postVideo == null)
             {
                 return NotFound();
             }
 
-            return await postVideo.Include(c => c.Channel)
-                .Include(l => l.Like).Include(c => c.Comment)
-                .Select(x => ItemToDTO(x)).ToListAsync();
+            return  ItemToDTO(postVideo);
         }
 
         [HttpGet("GetPostVideoById/{id}")]
@@ -74,9 +75,7 @@ namespace wakeApi.Controllers
                 return NotFound();
             }
 
-            return await postVideo.Include(c => c.Channel)
-                .Include(l => l.Like)
-                .Include(ct => ct.Comment).Select(x => ItemToDTO(x)).ToListAsync();
+            return await postVideo.Include(c => c.Channel).Select(x => ItemToDTO(x)).ToListAsync();
         }
 
         [HttpPut("UpdatePostVideo/{id}")]
@@ -166,18 +165,19 @@ namespace wakeApi.Controllers
                     ChannelName = todoItem.Channel.ChannelName,
                     IconChannel = todoItem.Channel.IconChannel
                 },
-                LikeId = todoItem.LikeId,
-                LikeDto = new LikeDto
+                EvaluationId = todoItem.EvaluationId,
+                EvaluationDto = new EvaluationDto
                 {
-                    CountLike = todoItem.Like.CountLike,
-                    CountDislike = todoItem.Like.CountDislike
+                    Id = todoItem.Evaluation.Id,
+                    CountLike = todoItem.Evaluation.CountLike,
+                    CountDislike = todoItem.Evaluation.CountDislike
                 },
                 CommentId = todoItem.CommentId,
-                CommentDto = new CommentDto
+                CommentDto = new CommentDto 
                 {
-                    CommentText = todoItem.Comment.CommentText
+                    Id = todoItem.Comment.Id,
+                    CommentText = todoItem.Comment.CommentText,
                 }
-
             };
     }
 }

@@ -12,8 +12,8 @@ namespace wakeApi.Data
         public WakeContext(DbContextOptions<WakeContext> options) : base(options) { }
 
         public DbSet<PostVideo> PostVideos { get; set; }
-        public DbSet<Like> Likes { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Evaluation> Evaluations { get; set; }
         public DbSet<Channel> Channels { get; set; }
         public DbSet<Follower> Followers { get; set; }
 
@@ -38,13 +38,13 @@ namespace wakeApi.Data
                 .WithMany(p => p.PostVideos)
                 .HasForeignKey(k => k.ChannelId).OnDelete(DeleteBehavior.Restrict);
 
-                postVideo.HasOne(ct => ct.Comment)
+                postVideo.HasOne(l => l.Evaluation)
                 .WithMany(p => p.PostVideos)
-                .HasForeignKey(k => k.CommentId).OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(l => l.EvaluationId).OnDelete(DeleteBehavior.Restrict);
 
-                postVideo.HasOne(l => l.Like)
+                postVideo.HasOne(l => l.Comment)
                 .WithMany(p => p.PostVideos)
-                .HasForeignKey(k => k.LikeId).OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(l => l.CommentId).OnDelete(DeleteBehavior.Cascade);
             });
         }
 

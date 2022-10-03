@@ -6,6 +6,8 @@ namespace wakeApi.Models
 {
     public class PostVideo
     {
+        internal object PostVideos;
+
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -18,8 +20,8 @@ namespace wakeApi.Models
         public virtual User? User { get; set; }
         public int ChannelId { get; set; }
         public virtual Channel? Channel { get; set; }
-        public int LikeId { get; set; }
-        public virtual Like? Like { get; set; }
+        public int EvaluationId { get; set; }
+        public virtual Evaluation? Evaluation { get; set; }
         public int CommentId { get; set; }
         public virtual Comment? Comment { get; set; }
     }

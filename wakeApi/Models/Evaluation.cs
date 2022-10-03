@@ -1,8 +1,11 @@
-﻿using wakeApi.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using wakeApi.Dtos;
+using wakeApi.Identity;
 
-namespace wakeApi.Dtos
+namespace wakeApi.Models
 {
-    public class LikeDto
+    public class Evaluation
     {
         public int Id { get; set; }
         public int CountLike { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using wakeApi.Models;
 
 namespace wakeApi.Dtos
 {
@@ -16,8 +17,8 @@ namespace wakeApi.Dtos
         public virtual UserDto? UserDto { get; set; }
         public int ChannelId { get; set; }
         public virtual ChannelDto? ChannelDto { get; set; }
-        public int LikeId { get; set; }
-        public virtual LikeDto? LikeDto { get; set; }
+        public int EvaluationId { get; set; }
+        public virtual EvaluationDto? EvaluationDto { get; set; }
         public int CommentId { get; set; }
         public virtual CommentDto? CommentDto { get; set; }
     }

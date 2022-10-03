@@ -1,11 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using wakeApi.Dtos;
-using wakeApi.Identity;
+﻿using wakeApi.Models;
 
-namespace wakeApi.Models
+namespace wakeApi.Dtos
 {
-    public class Like
+    public class EvaluationDto
     {
         public int Id { get; set; }
         public int CountLike { get; set; }
@@ -14,7 +11,6 @@ namespace wakeApi.Models
         public int ChannelId { get; set; }
         public int PostId { get; set; }
         public bool Flag { get; set; }
-        public List<PostVideo>? PostVideos { get; set; }
-
+        public List<PostVideoDto>? PostVideoDtos { get; set; }
     }
 }

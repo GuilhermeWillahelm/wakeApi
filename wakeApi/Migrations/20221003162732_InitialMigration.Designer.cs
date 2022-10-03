@@ -12,8 +12,8 @@ using wakeApi.Data;
 namespace wakeApi.Migrations
 {
     [DbContext(typeof(WakeContext))]
-    [Migration("20220922203920_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20221003162732_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -304,29 +304,7 @@ namespace wakeApi.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("wakeApi.Models.Follower", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("FollowerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Followers");
-                });
-
-            modelBuilder.Entity("wakeApi.Models.Like", b =>
+            modelBuilder.Entity("wakeApi.Models.Evaluation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -354,7 +332,29 @@ namespace wakeApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Likes");
+                    b.ToTable("Evaluations");
+                });
+
+            modelBuilder.Entity("wakeApi.Models.Follower", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("FollowerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Followers");
                 });
 
             modelBuilder.Entity("wakeApi.Models.PostVideo", b =>
@@ -375,7 +375,7 @@ namespace wakeApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("LikeId")
+                    b.Property<int>("EvaluationId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Posted")
@@ -402,7 +402,7 @@ namespace wakeApi.Migrations
 
                     b.HasIndex("CommentId");
 
-                    b.HasIndex("LikeId");
+                    b.HasIndex("EvaluationId");
 
                     b.HasIndex("UserId");
 
@@ -506,12 +506,12 @@ namespace wakeApi.Migrations
                     b.HasOne("wakeApi.Models.Comment", "Comment")
                         .WithMany("PostVideos")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("wakeApi.Models.Like", "Like")
+                    b.HasOne("wakeApi.Models.Evaluation", "Evaluation")
                         .WithMany("PostVideos")
-                        .HasForeignKey("LikeId")
+                        .HasForeignKey("EvaluationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -525,7 +525,7 @@ namespace wakeApi.Migrations
 
                     b.Navigation("Comment");
 
-                    b.Navigation("Like");
+                    b.Navigation("Evaluation");
 
                     b.Navigation("User");
                 });
@@ -550,7 +550,7 @@ namespace wakeApi.Migrations
                     b.Navigation("PostVideos");
                 });
 
-            modelBuilder.Entity("wakeApi.Models.Like", b =>
+            modelBuilder.Entity("wakeApi.Models.Evaluation", b =>
                 {
                     b.Navigation("PostVideos");
                 });

@@ -33,13 +33,22 @@ namespace wakeApi.Controllers
 
         // GET: api/Comments
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<CommentDto>>> GetComments()
         {
             return await _context.Comments.Select(c => ItemToDto(c)).ToListAsync();
         }
 
+        [HttpGet("GetCommentsPerVideo/{id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<CommentDto>>> GetCommentsPerVideo(int id)
+        {
+            return await _context.Comments.Where(c => c.PostId == id).Select(c => ItemToDto(c)).ToListAsync();
+        }
+
         // GET: api/Comments/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<CommentDto>> GetComment(int id)
         {
             var comment = await _context.Comments.FindAsync(id);
@@ -135,6 +144,8 @@ namespace wakeApi.Controllers
                 CommentText = comment.CommentText,
                 PostId = comment.PostId,
                 UserId = comment.UserId,
+                ChannelId = comment.ChannelId,
+                Flag = comment.Flag,
             };  
     }
 }
