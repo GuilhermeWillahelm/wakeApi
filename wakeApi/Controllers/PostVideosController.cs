@@ -75,7 +75,8 @@ namespace wakeApi.Controllers
                 return NotFound();
             }
 
-            return await postVideo.Include(c => c.Channel).Select(x => ItemToDTO(x)).ToListAsync();
+            return await postVideo.Include(c => c.Channel)
+                .Include(e => e.Evaluation).Include(ct => ct.Comment).Select(x => ItemToDTO(x)).ToListAsync();
         }
 
         [HttpPut("UpdatePostVideo/{id}")]
