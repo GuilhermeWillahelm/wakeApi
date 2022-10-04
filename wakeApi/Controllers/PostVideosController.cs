@@ -163,6 +163,7 @@ namespace wakeApi.Controllers
                 ChannelId = todoItem.ChannelId,
                 ChannelDto = new ChannelDto
                 {
+                    Id = todoItem.Channel.Id,
                     ChannelName = todoItem.Channel.ChannelName,
                     IconChannel = todoItem.Channel.IconChannel
                 },
