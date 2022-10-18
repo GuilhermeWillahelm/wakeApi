@@ -14,9 +14,9 @@ namespace wakeApi.AutoMapper
             CreateMap<User, UserLoginDto>().ReverseMap();
             CreateMap<PostVideo, PostVideoDto>().ReverseMap();
             CreateMap<Channel, ChannelDto>().ReverseMap();
-            CreateMap<Follower, FollowerDto>().ReverseMap();
             CreateMap<Comment, CommentDto>().ReverseMap();
             CreateMap<Evaluation, EvaluationDto>().ReverseMap();
+            CreateMap<Follower, FollowerDto>().ReverseMap();
         }
     }
 }

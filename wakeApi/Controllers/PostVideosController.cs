@@ -35,8 +35,7 @@ namespace wakeApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<PostVideoDto>>> GetPostVideos(string? searchString)
         {
-            var postVideo = from p in _context.PostVideos.Include(c => c.Channel)
-                            .Include(e => e.Evaluation).Include(ct => ct.Comment) select p;
+            var postVideo = from p in _context.PostVideos.Include(c => c.Channel) select p;
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -51,9 +50,7 @@ namespace wakeApi.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<PostVideoDto>> GetPostVideo(int id)
         {
-            var postVideo = await _context.PostVideos.Include(c => c.Channel)
-                .Include(e => e.Evaluation).Include(ct => ct.Comment)
-                .Where(p => p.Id == id).FirstAsync();
+            var postVideo = await _context.PostVideos.Include(c => c.Channel).Where(p => p.Id == id).FirstAsync();
 
             if (postVideo == null)
             {
@@ -75,8 +72,7 @@ namespace wakeApi.Controllers
                 return NotFound();
             }
 
-            return await postVideo.Include(c => c.Channel)
-                .Include(e => e.Evaluation).Include(ct => ct.Comment).Select(x => ItemToDTO(x)).ToListAsync();
+            return await postVideo.Include(c => c.Channel).Select(x => ItemToDTO(x)).ToListAsync();
         }
 
         [HttpPut("UpdatePostVideo/{id}")]
@@ -165,20 +161,7 @@ namespace wakeApi.Controllers
                 {
                     Id = todoItem.Channel.Id,
                     ChannelName = todoItem.Channel.ChannelName,
-                    IconChannel = todoItem.Channel.IconChannel
-                },
-                EvaluationId = todoItem.EvaluationId,
-                EvaluationDto = new EvaluationDto
-                {
-                    Id = todoItem.Evaluation.Id,
-                    CountLike = todoItem.Evaluation.CountLike,
-                    CountDislike = todoItem.Evaluation.CountDislike
-                },
-                CommentId = todoItem.CommentId,
-                CommentDto = new CommentDto 
-                {
-                    Id = todoItem.Comment.Id,
-                    CommentText = todoItem.Comment.CommentText,
+                    IconChannel = todoItem.Channel.IconChannel,
                 }
             };
     }

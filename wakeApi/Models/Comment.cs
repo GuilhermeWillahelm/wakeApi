@@ -13,6 +13,5 @@ namespace wakeApi.Models
         public int ChannelId { get; set; }
         public int PostId { get; set; }
         public bool Flag { get; set; }
-        public List<PostVideo>? PostVideos { get; set; }
     }
 }

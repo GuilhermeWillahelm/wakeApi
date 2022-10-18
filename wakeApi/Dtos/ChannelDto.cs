@@ -15,7 +15,5 @@ namespace wakeApi.Dtos
         public string IconChannel { get; set; } = string.Empty;
         public int UserId { get; set; }
         public virtual UserDto? User { get; set; }
-        public int FollowerId { get; set; }
-        public virtual FollowerDto? Follower { get; set; }
     }
 }

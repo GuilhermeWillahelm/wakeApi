@@ -20,9 +20,5 @@ namespace wakeApi.Models
         public virtual User? User { get; set; }
         public int ChannelId { get; set; }
         public virtual Channel? Channel { get; set; }
-        public int EvaluationId { get; set; }
-        public virtual Evaluation? Evaluation { get; set; }
-        public int CommentId { get; set; }
-        public virtual Comment? Comment { get; set; }
     }
 }

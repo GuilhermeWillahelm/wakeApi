@@ -37,14 +37,6 @@ namespace wakeApi.Data
                 postVideo.HasOne(c => c.Channel)
                 .WithMany(p => p.PostVideos)
                 .HasForeignKey(k => k.ChannelId).OnDelete(DeleteBehavior.Restrict);
-
-                postVideo.HasOne(l => l.Evaluation)
-                .WithMany(p => p.PostVideos)
-                .HasForeignKey(l => l.EvaluationId).OnDelete(DeleteBehavior.Restrict);
-
-                postVideo.HasOne(l => l.Comment)
-                .WithMany(p => p.PostVideos)
-                .HasForeignKey(l => l.CommentId).OnDelete(DeleteBehavior.Cascade);
             });
         }
 

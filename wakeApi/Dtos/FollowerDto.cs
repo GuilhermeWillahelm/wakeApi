@@ -3,8 +3,9 @@
     public class FollowerDto
     {
         public int Id { get; set; }
-        public string FollowerName { get; set; } = string.Empty;
+        public int CountFollows { get; set; }
         public int UserId { get; set; }
-        public virtual UserDto? User { get; set; }
+        public int ChannelId { get; set; }
+        public bool IsFollowing { get; set; }
     }
 }
